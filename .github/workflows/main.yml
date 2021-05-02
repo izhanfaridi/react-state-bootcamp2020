@@ -1,0 +1,36 @@
+
+name: React App Deployed to Surge
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install Node.js
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: 12
+          
+      - name: Install yarn  
+        uses: bahmutov/npm-install@v1
+        with:
+          install-command: yarn --frozen-lockfile --silent
+          
+      - name: Build Raect App
+        run: yarn build
+         
+      - name: Install Surge
+        run: npm install --global surge
+      
+      - name: Deploy to Surge
+        run: surge ./build react-state-bootcamp-class-4.surge.sh --token ${{secrets.SURGE_TOKEN}}
